@@ -1,0 +1,5 @@
+class RbsMacrosTest < Minitest::Test
+  def test_version_number: () -> void
+  def test_something_useful: () -> void
+end
+
