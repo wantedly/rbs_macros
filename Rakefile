@@ -1,12 +1,23 @@
 # frozen_string_literal: true
 
 require "bundler/gem_tasks"
-require "rspec/core/rake_task"
+require "rake/testtask"
 
-RSpec::Core::RakeTask.new(:spec)
+Rake::TestTask.new(:test) do |t|
+  t.test_files = Dir["test/**/*_test.rb"]
+end
 
 require "rubocop/rake_task"
 
 RuboCop::RakeTask.new
 
-task default: %i[spec rubocop]
+task steep: :"steep:setup" do
+  sh "bundle exec steep check"
+end
+namespace :steep do
+  task :setup do
+    sh "bundle exec rbs collection install"
+  end
+end
+
+task default: %i[test rubocop steep]

@@ -13,7 +13,15 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: minitest
+  version: '0'
+  source:
+    type: stdlib
 - name: monitor
+  version: '0'
+  source:
+    type: stdlib
+- name: mutex_m
   version: '0'
   source:
     type: stdlib
