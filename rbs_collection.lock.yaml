@@ -5,6 +5,10 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: forwardable
+  version: '0'
+  source:
+    type: stdlib
 - name: json
   version: '0'
   source:

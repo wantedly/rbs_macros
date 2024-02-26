@@ -18,5 +18,7 @@ gems:
     ignore: true
   - name: rubocop
     ignore: true
+  - name: rubocop-minitest
+    ignore: true
   - name: steep
     ignore: true

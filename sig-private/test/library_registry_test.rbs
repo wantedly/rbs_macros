@@ -1,0 +1,11 @@
+class LibraryRegistryTest < Minitest::Test
+  def test_register_array: () -> void
+  def test_register_block: () -> void
+  def test_register_empty: () -> void
+  def test_register_multiple: () -> void
+  def test_lookup_missing: () -> void
+  def test_lookup_require: () -> void
+  def test_lookup_require_fail: () -> void
+  def test_lookup_require_no_registration: () -> void
+  def test_lookup_require_soft: () -> void
+end
