@@ -1,4 +1,10 @@
 class RbsMacrosTest < Minitest::Test
   def test_version_number: () -> void
+
+  class DummyFS
+    include RbsMacros::_FS
+    @files: Hash[String, String]
+    def initialize: () -> void
+  end
 end
 

@@ -1,2 +1,7 @@
 module RbsMacros
+  interface _FS
+    def read: (String path) -> String
+    def write: (String path, String content) -> void
+  end
+  def self.run: (?fs: _FS) -> void
 end

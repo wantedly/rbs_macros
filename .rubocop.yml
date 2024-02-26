@@ -8,6 +8,9 @@ require:
 AllCops:
   TargetRubyVersion: "3.2"
 
+Naming/MethodParameterName:
+  Enabled: false
+
 Style/LambdaCall:
   Enabled: true
   EnforcedStyle: braces
