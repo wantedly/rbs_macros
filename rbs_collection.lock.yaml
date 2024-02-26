@@ -1,0 +1,44 @@
+---
+path: ".gem_rbs_collection"
+gems:
+- name: abbrev
+  version: '0'
+  source:
+    type: stdlib
+- name: json
+  version: '0'
+  source:
+    type: stdlib
+- name: logger
+  version: '0'
+  source:
+    type: stdlib
+- name: monitor
+  version: '0'
+  source:
+    type: stdlib
+- name: optparse
+  version: '0'
+  source:
+    type: stdlib
+- name: pathname
+  version: '0'
+  source:
+    type: stdlib
+- name: prism
+  version: 0.24.0
+  source:
+    type: rubygems
+- name: rbs
+  version: 3.4.4
+  source:
+    type: rubygems
+- name: rdoc
+  version: '0'
+  source:
+    type: stdlib
+- name: tsort
+  version: '0'
+  source:
+    type: stdlib
+gemfile_lock_path: Gemfile.lock
