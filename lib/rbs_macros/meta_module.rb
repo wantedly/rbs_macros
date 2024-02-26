@@ -20,6 +20,10 @@ module RbsMacros
     def meta_const_get(name)
       @constants[name]
     end
+
+    def meta_constants
+      @constants.keys
+    end
   end
 
   MetaClass = MetaModule

@@ -23,6 +23,9 @@ module RbsMacros
       when Prism::ClassNode
         klass = MetaClass.new(self, node.name.to_s, is_class: true)
         @object_class.meta_const_set(node.name, klass)
+      when Prism::ModuleNode
+        mod = MetaModule.new(self, node.name.to_s, is_class: false)
+        @object_class.meta_const_set(node.name, mod)
       when Prism::ProgramNode
         meta_eval_ruby_node(node.statements)
       when Prism::StatementsNode
