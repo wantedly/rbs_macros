@@ -1,0 +1,17 @@
+module RbsMacros
+  class MetaModule
+    attr_reader env: Environment
+    attr_reader name: String?
+    attr_reader is_class: bool?
+    attr_reader superclass: MetaModule?
+
+    @constants: Hash[Symbol, untyped]
+
+    def initialize: (Environment env, String? name, ?is_class: bool?, ?superclass: MetaModule?) -> void
+
+    def meta_const_set: (Symbol name, untyped value) -> void
+    def meta_const_get: (Symbol name) -> untyped
+  end
+
+  class MetaClass = MetaModule
+end

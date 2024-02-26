@@ -1,0 +1,10 @@
+module RbsMacros
+  class Environment
+    attr_reader object_class: MetaModule
+    def initialize: () -> void
+
+    def meta_eval_ruby: (String) -> void
+
+    def meta_eval_ruby_node: (Prism::Node node) -> void
+  end
+end

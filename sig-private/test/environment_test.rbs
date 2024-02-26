@@ -1,0 +1,3 @@
+class RbsMacrosTest < Minitest::Test
+  def test_eval_simple_class: () -> void
+end
