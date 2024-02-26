@@ -1,2 +1,3 @@
 module RbsMacros
+  VERSION: String
 end
