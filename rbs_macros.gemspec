@@ -9,7 +9,13 @@ Gem::Specification.new do |spec|
   spec.email = ["ackie.h.gmai@gmail.com"]
 
   spec.summary = "RBS meets metaprogramming"
-  spec.description = "Rubyists love metaprogramming. This tool bridges between RBS and metaprogramming, by allowing you to define a macro, which is then used to generate RBS definitions based on macro invocations."
+  spec.description = <<~TXT
+    Rubyists love metaprogramming.
+    This tool bridges between RBS and metaprogramming,
+    by allowing you to define a macro,
+    which is then used to generate RBS definitions
+    based on macro invocations."
+  TXT
   spec.homepage = "https://github.com/wantedly/rbs_macros"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.2.0"
@@ -33,8 +39,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Uncomment to register a new dependency of your gem
-  spec.add_dependency "rbs", "~> 3.4"
   spec.add_dependency "prism", "~> 0.24.0"
+  spec.add_dependency "rbs", "~> 3.4"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
