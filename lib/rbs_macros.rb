@@ -2,6 +2,7 @@
 
 require_relative "rbs_macros/version"
 require_relative "rbs_macros/environment"
+require_relative "rbs_macros/exec_ctx"
 require_relative "rbs_macros/library_registry"
 require_relative "rbs_macros/meta_module"
 

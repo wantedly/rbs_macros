@@ -7,23 +7,16 @@ module RbsMacros
 
     def meta_eval_ruby: (String) -> void
 
-    def meta_eval_ruby_node: (Prism::Node node) -> void
-
     def add_decl: (RBS::AST::Declarations::t | RBS::AST::Members::t decl, mod: MetaModule, file: String) -> void
 
     def out_files: () -> Array[String]
 
-    class DeclarationEntry
+    class DeclarationEntry < Data
       attr_reader declaration(): RBS::AST::Declarations::t | RBS::AST::Members::t
       attr_reader mod(): MetaModule
       attr_reader file(): String
+      def self.new: (declaration: RBS::AST::Declarations::t | RBS::AST::Members::t, mod: MetaModule, file: String) -> instance
       def initialize: (declaration: RBS::AST::Declarations::t | RBS::AST::Members::t, mod: MetaModule, file: String) -> void
-    end
-
-    class OutFile
-      attr_reader modules: Hash[String, Array[RBS::AST::Declarations::t | RBS::AST::Members::t]]
-
-      def initialize: () -> void
     end
   end
 end

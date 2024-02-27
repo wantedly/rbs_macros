@@ -16,24 +16,13 @@ module RbsMacros
       result = Prism.parse(code)
       raise ArgumentError, "Parse error: #{result.errors}" if result.failure?
 
-      meta_eval_ruby_node(result.value)
-    end
-
-    def meta_eval_ruby_node(node)
-      case node
-      when Prism::ClassNode
-        klass = MetaClass.new(self, node.name.to_s, is_class: true)
-        @object_class.meta_const_set(node.name, klass)
-      when Prism::ModuleNode
-        mod = MetaModule.new(self, node.name.to_s, is_class: false)
-        @object_class.meta_const_set(node.name, mod)
-      when Prism::ProgramNode
-        meta_eval_ruby_node(node.statements)
-      when Prism::StatementsNode
-        node.body.each { |stmt| meta_eval_ruby_node(stmt) }
-        # else
-        # $stderr.puts "Dismissing node: #{node.inspect}"
-      end
+      ExecCtx.new(
+        env: self,
+        self: nil, # TODO
+        cref: @object_class,
+        cref_dynamic: @object_class,
+        locals: {}
+      ).eval_node(result.value)
     end
 
     def add_decl(decl, mod:, file:)
