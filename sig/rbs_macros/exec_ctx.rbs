@@ -8,6 +8,10 @@ module RbsMacros
     def self.new: (env: Environment, self: untyped, cref: MetaModule, cref_dynamic: MetaModule, locals: untyped) -> instance
     def initialize: (env: Environment, self: untyped, cref: MetaModule, cref_dynamic: MetaModule, locals: untyped) -> void
 
-    def eval_node: (Prism::Node node) -> void
+    def eval_node: (Prism::Node? node) -> void
+
+    private
+
+    def module_name: (MetaModule parent, String? name) -> String?
   end
 end

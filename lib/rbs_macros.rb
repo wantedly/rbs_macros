@@ -17,6 +17,9 @@ module RbsMacros
     env.meta_eval_ruby(<<~RUBY)
       module Foo
         meta_something :foo
+        module Bar
+          meta_something :bar
+        end
       end
     RUBY
 
