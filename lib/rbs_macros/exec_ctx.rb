@@ -7,6 +7,16 @@ module RbsMacros
   class ExecCtx
     def eval_node(node)
       case node
+      when nil
+        # do nothing
+      when Prism::CallNode
+        recv = \
+          if node.receiver
+            eval_node(node.receiver)
+          else
+            self.self
+          end
+        recv.meta_send(name: node.name, positional: [], keyword: {}, block: nil) if recv.is_a?(MetaModule)
       when Prism::ClassNode
         klass = MetaClass.new(env, module_name(cref, node.name.to_s), is_class: true)
         cref.meta_const_set(node.name, klass)

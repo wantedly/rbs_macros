@@ -27,7 +27,11 @@ class RbsMacrosTest < Minitest::Test
 
     assert_equal <<~RBS, fs.read("sig/foo.rbs")
       module Foo
-        def foo: () -> void
+        def method_defined_from_macro: () -> void
+
+        module Bar
+          def method_defined_from_macro: () -> void
+        end
       end
     RBS
   end

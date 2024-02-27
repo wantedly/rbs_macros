@@ -16,51 +16,12 @@ module RbsMacros
     env = Environment.new
     env.meta_eval_ruby(<<~RUBY)
       module Foo
-        meta_something :foo
+        my_macro :foo
         module Bar
-          meta_something :bar
+          my_macro :bar
         end
       end
     RUBY
-
-    env.object_class.meta_constants.each do |name|
-      value = env.object_class.meta_const_get(name)
-      next unless value.is_a?(MetaModule)
-
-      env.add_decl(
-        RBS::AST::Members::MethodDefinition.new(
-          name: :foo,
-          kind: :instance,
-          overloads: [
-            RBS::AST::Members::MethodDefinition::Overload.new(
-              method_type: RBS::MethodType.new(
-                type_params: [],
-                type: RBS::Types::Function.new(
-                  required_positionals: [],
-                  optional_positionals: [],
-                  rest_positionals: nil,
-                  trailing_positionals: [],
-                  required_keywords: {},
-                  optional_keywords: {},
-                  rest_keywords: nil,
-                  return_type: RBS::Types::Bases::Void.new(location: nil)
-                ),
-                block: nil,
-                location: nil
-              ),
-              annotations: []
-            )
-          ],
-          annotations: [],
-          location: nil,
-          comment: nil,
-          overloading: false,
-          visibility: nil
-        ),
-        mod: value,
-        file: "foo"
-      )
-    end
 
     files = {} # : Hash[String, Array[RBS::AST::Declarations::t]]
     env.decls.each do |entry|
@@ -71,7 +32,7 @@ module RbsMacros
         container = nil
         current_decls.each do |decl|
           if (decl.is_a?(RBS::AST::Declarations::Class) || decl.is_a?(RBS::AST::Declarations::Module)) \
-            && decl.name.name == name
+            && decl.name.name == name.to_sym
             container = decl
           end
         end
