@@ -3,13 +3,30 @@ module RbsMacros
     attr_reader object_class: MetaModule
     attr_reader decls: Array[DeclarationEntry]
 
+    @exact_handlers: Hash[Symbol, Array[^(HandlerParams) -> void]]
+
     def initialize: () -> void
+
+    def register_handler: (Symbol | String name, ^(HandlerParams) -> void handler) -> void
+
+    def invoke: (HandlerParams params) -> void
 
     def meta_eval_ruby: (String) -> void
 
     def add_decl: (RBS::AST::Declarations::t | RBS::AST::Members::t decl, mod: MetaModule, file: String) -> void
 
     def out_files: () -> Array[String]
+
+    class HandlerParams < Data
+      attr_reader receiver(): Object
+      attr_reader name(): Symbol
+      attr_reader positional(): Array[Object]
+      attr_reader keyword(): Hash[Object, Object]
+      attr_reader block(): untyped
+
+      def self.new: (receiver: Object, name: Symbol, positional: Array[Object], keyword: Hash[Object, Object], block: untyped) -> instance
+      def initialize: (receiver: Object, name: Symbol, positional: Array[Object], keyword: Hash[Object, Object], block: untyped) -> void
+    end
 
     class DeclarationEntry < Data
       attr_reader declaration(): RBS::AST::Declarations::t | RBS::AST::Members::t

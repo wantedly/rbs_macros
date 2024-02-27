@@ -9,8 +9,6 @@ module RbsMacros
 
     def initialize: (Environment env, String? name, ?is_class: bool?, ?superclass: MetaModule?) -> void
 
-    def meta_send: (name: Symbol, positional: Array[untyped], keyword: Hash[Object, Object], block: untyped) -> untyped
-
     def meta_const_set: (Symbol name, untyped value) -> void
     def meta_const_get: (Symbol name) -> untyped
     def meta_constants: () -> Array[Symbol]

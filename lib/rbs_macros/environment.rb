@@ -10,6 +10,18 @@ module RbsMacros
     def initialize
       @object_class = MetaClass.new(self, "Object", is_class: true)
       @decls = []
+      @exact_handlers = {}
+    end
+
+    def register_handler(name, handler)
+      (@exact_handlers[name.to_sym] ||= []) << handler
+    end
+
+    def invoke(params)
+      handlers = @exact_handlers[params.name]
+      handlers&.each do |handler|
+        handler.(params)
+      end
     end
 
     def meta_eval_ruby(code)
@@ -28,6 +40,8 @@ module RbsMacros
     def add_decl(decl, mod:, file:)
       @decls << DeclarationEntry.new(declaration: decl, mod:, file:)
     end
+
+    HandlerParams = _ = Data.define(:receiver, :name, :positional, :keyword, :block) # rubocop:disable Naming/ConstantName
 
     DeclarationEntry = _ = Data.define(:declaration, :mod, :file) # rubocop:disable Naming/ConstantName
   end

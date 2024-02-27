@@ -16,7 +16,15 @@ module RbsMacros
           else
             self.self
           end
-        recv.meta_send(name: node.name, positional: [], keyword: {}, block: nil) if recv.is_a?(MetaModule)
+        env.invoke(
+          Environment::HandlerParams.new(
+            receiver: recv,
+            name: node.name,
+            positional: [],
+            keyword: {},
+            block: nil
+          )
+        )
       when Prism::ClassNode
         klass = MetaClass.new(env, module_name(cref, node.name.to_s), is_class: true)
         cref.meta_const_set(node.name, klass)
