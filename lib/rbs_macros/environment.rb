@@ -5,10 +5,11 @@ require "prism"
 module RbsMacros
   # An environment for the Ruby program being analyzed.
   class Environment
-    attr_reader :object_class
+    attr_reader :object_class, :decls
 
     def initialize
       @object_class = MetaClass.new(self, "Object", is_class: true)
+      @decls = []
     end
 
     def meta_eval_ruby(code)
@@ -34,5 +35,11 @@ module RbsMacros
         # $stderr.puts "Dismissing node: #{node.inspect}"
       end
     end
+
+    def add_decl(decl, mod:, file:)
+      @decls << DeclarationEntry.new(declaration: decl, mod:, file:)
+    end
+
+    DeclarationEntry = _ = Data.define(:declaration, :mod, :file) # rubocop:disable Naming/ConstantName
   end
 end
