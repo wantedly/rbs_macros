@@ -42,13 +42,11 @@ module RbsMacros
       raise ArgumentError, "Unknown library: #{name}" unless soft_fail
     end
 
-    class << self
-      @global = LibraryRegistry.new
-      def @global.require_library(name, soft_fail: false)
-        require name
-      rescue LoadError
-        raise unless soft_fail
-      end
+    @global = LibraryRegistry.new
+    def @global.require_library(name, soft_fail: false)
+      require name
+    rescue LoadError
+      raise unless soft_fail
     end
   end
 end

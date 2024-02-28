@@ -6,5 +6,8 @@ class RbsMacrosTest < Minitest::Test
     @files: Hash[String, String]
     def initialize: () -> void
   end
+
+  class DummyMacro < RbsMacros::Macro
+  end
 end
 

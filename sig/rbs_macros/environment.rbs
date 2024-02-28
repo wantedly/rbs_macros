@@ -18,14 +18,15 @@ module RbsMacros
     def out_files: () -> Array[String]
 
     class HandlerParams < Data
+      attr_reader env(): Environment
       attr_reader receiver(): Object
       attr_reader name(): Symbol
       attr_reader positional(): Array[Object]
       attr_reader keyword(): Hash[Object, Object]
       attr_reader block(): untyped
 
-      def self.new: (receiver: Object, name: Symbol, positional: Array[Object], keyword: Hash[Object, Object], block: untyped) -> instance
-      def initialize: (receiver: Object, name: Symbol, positional: Array[Object], keyword: Hash[Object, Object], block: untyped) -> void
+      def self.new: (env: Environment, receiver: Object, name: Symbol, positional: Array[Object], keyword: Hash[Object, Object], block: untyped) -> instance
+      def initialize: (env: Environment, receiver: Object, name: Symbol, positional: Array[Object], keyword: Hash[Object, Object], block: untyped) -> void
     end
 
     class DeclarationEntry < Data

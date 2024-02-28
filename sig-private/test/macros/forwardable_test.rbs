@@ -1,0 +1,7 @@
+class ForwardableTest < Minitest::Test
+  class DummyFS
+    include RbsMacros::_FS
+    @files: Hash[String, String]
+    def initialize: () -> void
+  end
+end

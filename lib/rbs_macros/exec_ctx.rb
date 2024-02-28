@@ -16,12 +16,18 @@ module RbsMacros
           else
             self.self
           end
+        positional = [] # : Array[Object]
+        keyword = {} # : Hash[Object, Object]
+        node.arguments&.arguments&.each do |arg|
+          positional << eval_node(arg)
+        end
         env.invoke(
           Environment::HandlerParams.new(
+            env:,
             receiver: recv,
             name: node.name,
-            positional: [],
-            keyword: {},
+            positional:,
+            keyword:,
             block: nil
           )
         )
@@ -47,6 +53,10 @@ module RbsMacros
         eval_node(node.statements)
       when Prism::StatementsNode
         node.body.each { |stmt| eval_node(stmt) }
+      when Prism::StringNode
+        node.unescaped.dup.freeze
+      when Prism::SymbolNode
+        node.unescaped.to_sym
       else
         $stderr.puts "Dismissing node: #{node.inspect}" # rubocop:disable Style/StderrPuts
       end

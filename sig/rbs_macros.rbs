@@ -3,5 +3,5 @@ module RbsMacros
     def read: (String path) -> String
     def write: (String path, String content) -> void
   end
-  def self.run: (?fs: _FS) -> void
+  def self.run: (macros: Array[Macro], ?fs: _FS) ?{ (Environment) -> void } -> void
 end

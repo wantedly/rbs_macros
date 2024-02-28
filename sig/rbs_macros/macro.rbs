@@ -1,0 +1,5 @@
+module RbsMacros
+  class Macro
+    def setup: (Environment env) -> void
+  end
+end

@@ -4,6 +4,7 @@ require_relative "rbs_macros/version"
 require_relative "rbs_macros/environment"
 require_relative "rbs_macros/exec_ctx"
 require_relative "rbs_macros/library_registry"
+require_relative "rbs_macros/macro"
 require_relative "rbs_macros/meta_module"
 
 require "stringio"
@@ -12,54 +13,12 @@ require "rbs"
 # RbsMacros is a utility that looks for metaprogramming-related
 # method invocation in your Ruby code and generates RBS files for them.
 module RbsMacros
-  def self.run(fs: File)
+  def self.run(macros:, fs: File, &block)
     env = Environment.new
-    env.register_handler(:my_macro, lambda { |params|
-      recv = params.receiver
-      next unless recv.is_a?(MetaModule)
-
-      env.add_decl(
-        RBS::AST::Members::MethodDefinition.new(
-          name: :method_defined_from_macro,
-          kind: :instance,
-          overloads: [
-            RBS::AST::Members::MethodDefinition::Overload.new(
-              method_type: RBS::MethodType.new(
-                type_params: [],
-                type: RBS::Types::Function.new(
-                  required_positionals: [],
-                  optional_positionals: [],
-                  rest_positionals: nil,
-                  trailing_positionals: [],
-                  required_keywords: {},
-                  optional_keywords: {},
-                  rest_keywords: nil,
-                  return_type: RBS::Types::Bases::Void.new(location: nil)
-                ),
-                block: nil,
-                location: nil
-              ),
-              annotations: []
-            )
-          ],
-          annotations: [],
-          location: nil,
-          comment: nil,
-          overloading: false,
-          visibility: nil
-        ),
-        mod: recv,
-        file: "foo"
-      )
-    })
-    env.meta_eval_ruby(<<~RUBY)
-      module Foo
-        my_macro :foo
-        module Bar
-          my_macro :bar
-        end
-      end
-    RUBY
+    macros.each do |macro|
+      macro.setup(env)
+    end
+    block&.(env)
 
     files = {} # : Hash[String, Array[RBS::AST::Declarations::t]]
     env.decls.each do |entry|

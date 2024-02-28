@@ -1,0 +1,10 @@
+module RbsMacros
+  module Macros
+    class ForwardableMacros < Macro
+      def meta_def_delegator: (Environment::HandlerParams params) -> void
+
+      def method: (:meta_def_delegator) -> ^(Environment::HandlerParams params) -> void
+                | ...
+    end
+  end
+end

@@ -41,7 +41,7 @@ module RbsMacros
       @decls << DeclarationEntry.new(declaration: decl, mod:, file:)
     end
 
-    HandlerParams = _ = Data.define(:receiver, :name, :positional, :keyword, :block) # rubocop:disable Naming/ConstantName
+    HandlerParams = _ = Data.define(:env, :receiver, :name, :positional, :keyword, :block) # rubocop:disable Naming/ConstantName
 
     DeclarationEntry = _ = Data.define(:declaration, :mod, :file) # rubocop:disable Naming/ConstantName
   end

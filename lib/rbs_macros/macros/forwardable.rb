@@ -1,35 +1,28 @@
 # frozen_string_literal: true
 
-require_relative "test_helper"
+require "rbs_macros"
 
-class RbsMacrosTest < Minitest::Test
-  def test_version_number
-    assert_kind_of String, RbsMacros::VERSION
-  end
+module RbsMacros
+  module Macros
+    # Implements macros for the `Forwardable` module.
+    class ForwardableMacros < Macro
+      def setup(env)
+        env.register_handler(:def_delegator, method(:meta_def_delegator))
+        env.register_handler(:def_instance_delegator, method(:meta_def_delegator))
+      end
 
-  class DummyFS
-    def initialize
-      @files = {}
-    end
-
-    def read(path)
-      @files[path] || raise(Errno::ENOENT, path)
-    end
-
-    def write(path, content)
-      @files[path] = content
-    end
-  end
-
-  class DummyMacro < RbsMacros::Macro
-    def setup(env)
-      env.register_handler(:my_macro, lambda { |params|
+      def meta_def_delegator(params)
         recv = params.receiver
-        next unless recv.is_a?(RbsMacros::MetaModule)
+        return unless recv.is_a?(MetaModule)
 
-        env.add_decl(
+        # accessor = params.positional[0]
+        method = params.positional[1]
+        ali = params.positional[2] || method
+        return unless ali.is_a?(Symbol) || ali.is_a?(String)
+
+        params.env.add_decl(
           RBS::AST::Members::MethodDefinition.new(
-            name: :method_defined_from_macro,
+            name: ali.to_sym,
             kind: :instance,
             overloads: [
               RBS::AST::Members::MethodDefinition::Overload.new(
@@ -60,32 +53,11 @@ class RbsMacrosTest < Minitest::Test
           mod: recv,
           file: "foo"
         )
-      })
-    end
-  end
-
-  def test_run
-    macros = [DummyMacro.new]
-    fs = DummyFS.new
-    RbsMacros.run(macros:, fs:) do |env|
-      env.meta_eval_ruby(<<~RUBY)
-        module Foo
-          my_macro :foo
-          module Bar
-            my_macro :bar
-          end
-        end
-      RUBY
-    end
-
-    assert_equal <<~RBS, fs.read("sig/foo.rbs")
-      module Foo
-        def method_defined_from_macro: () -> void
-
-        module Bar
-          def method_defined_from_macro: () -> void
-        end
       end
-    RBS
+    end
   end
+end
+
+RbsMacros::LibraryRegistry.register_macros("rbs_macros/macros/forwardable") do |macros|
+  macros << RbsMacros::Macros::ForwardableMacros
 end
