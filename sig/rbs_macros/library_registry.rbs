@@ -2,7 +2,6 @@ module RbsMacros
   class LibraryRegistry
     extend SingleForwardable
     self.@global: LibraryRegistry
-    def self.register_macros: (String name, ?Array[untyped] macros) ?{ (Array[untyped] macros) -> void } -> void
 
     @libraries: Hash[String, Array[untyped]]
 

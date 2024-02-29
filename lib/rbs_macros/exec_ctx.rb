@@ -33,8 +33,8 @@ module RbsMacros
           )
         )
       when Prism::ClassNode
-        klass = MetaClass.new(env, module_name(cref, node.name.to_s), is_class: true)
-        cref.meta_const_set(node.name, klass)
+        klass = cref.define_module(node.name)
+        klass.class!
         with(
           self: klass,
           cref: klass,
@@ -42,8 +42,8 @@ module RbsMacros
           locals: {}
         ).eval_node(node.body)
       when Prism::ModuleNode
-        mod = MetaModule.new(env, module_name(cref, node.name.to_s), is_class: false)
-        cref.meta_const_set(node.name, mod)
+        mod = cref.define_module(node.name)
+        mod.module!
         with(
           self: mod,
           cref: mod,
@@ -60,16 +60,6 @@ module RbsMacros
         node.unescaped.to_sym
       else
         $stderr.puts "Dismissing node: #{node.inspect}" # rubocop:disable Style/StderrPuts
-      end
-    end
-
-    private
-
-    def module_name(parent, name)
-      if name && (parent.name && parent.name != "Object")
-        "#{parent.name}::#{name}"
-      elsif name
-        name
       end
     end
   end

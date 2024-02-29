@@ -26,6 +26,18 @@ module RbsMacros
       )
     end
 
+    def class!
+      @is_class = true if @is_class.nil?
+    end
+
+    def module!
+      @is_class = false if @is_class.nil?
+    end
+
+    def define_module(name)
+      @constants[name] ||= MetaModule.new(@env, child_module_name(name.to_s))
+    end
+
     def meta_const_set(name, value)
       @constants[name] = value
     end
@@ -36,6 +48,16 @@ module RbsMacros
 
     def meta_constants
       @constants.keys
+    end
+
+    private
+
+    def child_module_name(child_name)
+      if child_name && (name && name != "Object")
+        "#{name}::#{child_name}"
+      elsif child_name
+        child_name
+      end
     end
   end
 

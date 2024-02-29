@@ -10,9 +10,5 @@ module RbsMacros
     def initialize: (env: Environment, filename: String, self: untyped, cref: MetaModule, cref_dynamic: MetaModule, locals: untyped) -> void
 
     def eval_node: (Prism::Node? node) -> untyped
-
-    private
-
-    def module_name: (MetaModule parent, String? name) -> String?
   end
 end

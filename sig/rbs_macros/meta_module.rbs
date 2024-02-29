@@ -12,9 +12,17 @@ module RbsMacros
 
     def rbs_type: () -> RBS::TypeName
 
+    def class!: () -> void
+    def module!: () -> void
+    def define_module: (Symbol name) -> MetaModule
+
     def meta_const_set: (Symbol name, untyped value) -> void
     def meta_const_get: (Symbol name) -> untyped
     def meta_constants: () -> Array[Symbol]
+
+    private
+
+    def child_module_name: (String? child_name) -> String?
   end
 
   class MetaClass = MetaModule

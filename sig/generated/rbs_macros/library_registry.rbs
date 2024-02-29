@@ -1,0 +1,5 @@
+module RbsMacros
+  class LibraryRegistry
+    def self.register_macros: (::String name, ?::Array[untyped] macros) ?{ (::Array[untyped] macros) -> void } -> void
+  end
+end
