@@ -75,4 +75,38 @@ class ForwardableTest < Minitest::Test
       end
     RBS
   end
+
+  def test_def_single_delegator
+    project = RbsMacros::FakeProject.new
+    project.write("lib/singleton_pattern.rb", <<~RBS)
+      class SingletonPattern
+        extend SingleForwardable
+        def_single_delegator :@singleton, :query, :singleton_query
+        def_single_delegator :@singleton, :length
+      end
+    RBS
+    project.write("sig/singleton_pattern.rbs", <<~RBS)
+      class SingletonPattern[T]
+        extend SingleForwardable
+        self.@singleton: SingletonPattern[Numeric]
+
+        def query: () -> T
+        def length: () -> Integer
+      end
+      module SingleForwardable
+      end
+    RBS
+    RbsMacros.run do |config|
+      config.project = project
+      config.macros << RbsMacros::Macros::SingleForwardableMacros.new
+    end
+
+    assert_equal <<~RBS, project.read("sig/generated/singleton_pattern.rbs")
+      class SingletonPattern
+        def self.singleton_query: () -> ::Numeric
+
+        def self.length: () -> ::Integer
+      end
+    RBS
+  end
 end
