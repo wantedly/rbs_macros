@@ -5,8 +5,8 @@ require_relative "lib/rbs_macros/version"
 Gem::Specification.new do |spec|
   spec.name = "rbs_macros"
   spec.version = RbsMacros::VERSION
-  spec.authors = ["Masaki Hara"]
-  spec.email = ["ackie.h.gmai@gmail.com"]
+  spec.authors = ["Wantedly, Inc.", "Masaki Hara"]
+  spec.email = ["dev@wantedly.com", "ackie.h.gmai@gmail.com"]
 
   spec.summary = "RBS meets metaprogramming"
   spec.description = <<~TXT
