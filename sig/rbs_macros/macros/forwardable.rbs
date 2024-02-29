@@ -5,6 +5,10 @@ module RbsMacros
 
       def method: (:meta_def_delegator) -> ^(Environment::HandlerParams params) -> void
                 | ...
+
+      private
+
+      def widened_instance: (RBS::Types::t type, builder: RBS::DefinitionBuilder) -> [RBS::Definition, RBS::Substitution]?
     end
   end
 end

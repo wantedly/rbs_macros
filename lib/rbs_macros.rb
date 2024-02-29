@@ -13,8 +13,9 @@ require "rbs"
 # RbsMacros is a utility that looks for metaprogramming-related
 # method invocation in your Ruby code and generates RBS files for them.
 module RbsMacros
-  def self.run(macros:, fs: File, &block)
+  def self.run(macros:, loader: nil, fs: File, &block)
     env = Environment.new
+    loader&.load(env: env.rbs)
     macros.each do |macro|
       macro.setup(env)
     end

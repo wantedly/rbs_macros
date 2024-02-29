@@ -20,8 +20,18 @@ class ForwardableTest < Minitest::Test
 
   def test_run
     macros = [RbsMacros::Macros::ForwardableMacros.new]
+    loader = RBS::EnvironmentLoader.new
     fs = DummyFS.new
-    RbsMacros.run(macros:, fs:) do |env|
+    RbsMacros.run(macros:, loader:, fs:) do |env|
+      buffer = RBS::Buffer.new(name: "foo.rbs", content: <<~RBS)
+        module Foo
+          extend Forwardable
+          @contents: Array[String]
+        end
+      RBS
+      _, directives, decls = RBS::Parser.parse_signature(buffer)
+      env.rbs.add_signature(buffer:, directives:, decls:)
+      env.instance_variable_set(:@rbs, env.rbs.resolve_type_names)
       env.meta_eval_ruby(<<~RUBY)
         module Foo
           extend Forwardable
@@ -32,7 +42,9 @@ class ForwardableTest < Minitest::Test
 
     assert_equal <<~RBS, fs.read("sig/foo.rbs")
       module Foo
-        def content_at: () -> void
+        def content_at: (::int index) -> ::String
+                      | (::int start, ::int length) -> ::Array[::String]?
+                      | (::Range[::Integer?] range) -> ::Array[::String]?
       end
     RBS
   end

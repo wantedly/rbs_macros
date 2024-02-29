@@ -5,9 +5,10 @@ require "prism"
 module RbsMacros
   # An environment for the Ruby program being analyzed.
   class Environment
-    attr_reader :object_class, :decls
+    attr_reader :rbs, :object_class, :decls
 
     def initialize
+      @rbs = RBS::Environment.new
       @object_class = MetaClass.new(self, "Object", is_class: true)
       @decls = []
       @exact_handlers = {}

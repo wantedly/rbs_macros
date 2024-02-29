@@ -1,5 +1,6 @@
 module RbsMacros
   class Environment
+    attr_reader rbs: RBS::Environment
     attr_reader object_class: MetaModule
     attr_reader decls: Array[DeclarationEntry]
 

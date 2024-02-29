@@ -6,8 +6,11 @@ module RbsMacros
     attr_reader superclass: MetaModule?
 
     @constants: Hash[Symbol, untyped]
+    @rbs_type: RBS::TypeName
 
     def initialize: (Environment env, String? name, ?is_class: bool?, ?superclass: MetaModule?) -> void
+
+    def rbs_type: () -> RBS::TypeName
 
     def meta_const_set: (Symbol name, untyped value) -> void
     def meta_const_get: (Symbol name) -> untyped
