@@ -24,8 +24,15 @@ module RbsMacros
     files = {} # : Hash[String, Array[RBS::AST::Declarations::t]]
     env.decls.each do |entry|
       file_decls = (files[entry.file] ||= [])
+      current_mod = env.object_class
       container = nil # : (RBS::AST::Declarations::Module | RBS::AST::Declarations::Class)?
       (entry.mod.name || "").split("::").each do |name|
+        inner_mod = current_mod.meta_const_get(name.to_sym)
+        raise "Not found: #{current_mod.name}::#{name}" unless inner_mod
+        raise "Not a module: #{current_mod.name}::#{name}" unless inner_mod.is_a?(MetaModule)
+
+        current_mod = inner_mod
+
         current_decls = container&.members || file_decls
         container = nil
         current_decls.each do |decl|
@@ -36,16 +43,29 @@ module RbsMacros
         end
         next if container
 
-        container = m = RBS::AST::Declarations::Module.new(
-          name: RBS::TypeName.new(name: name.to_sym, namespace: RBS::Namespace.empty),
-          type_params: [],
-          members: [],
-          self_types: [],
-          annotations: [],
-          location: nil,
-          comment: nil
-        )
-        current_decls << m
+        if inner_mod.is_class
+          container = c = RBS::AST::Declarations::Class.new(
+            name: RBS::TypeName.new(name: name.to_sym, namespace: RBS::Namespace.empty),
+            type_params: [],
+            super_class: nil,
+            members: [],
+            annotations: [],
+            location: nil,
+            comment: nil
+          )
+          current_decls << c
+        else
+          container = m = RBS::AST::Declarations::Module.new(
+            name: RBS::TypeName.new(name: name.to_sym, namespace: RBS::Namespace.empty),
+            type_params: [],
+            members: [],
+            self_types: [],
+            annotations: [],
+            location: nil,
+            comment: nil
+          )
+          current_decls << m
+        end
       end
       if container
         container.members << entry.declaration

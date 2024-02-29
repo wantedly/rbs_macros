@@ -75,6 +75,10 @@ class RbsMacrosTest < Minitest::Test
             my_macro :bar
           end
         end
+
+        class MyClass
+          my_macro :foo
+        end
       RUBY
     end
 
@@ -85,6 +89,10 @@ class RbsMacrosTest < Minitest::Test
         module Bar
           def method_defined_from_macro: () -> void
         end
+      end
+
+      class MyClass
+        def method_defined_from_macro: () -> void
       end
     RBS
   end
