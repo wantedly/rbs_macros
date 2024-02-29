@@ -124,7 +124,7 @@ module RbsMacros
       out = StringIO.new(+"", "w")
       writer = RBS::Writer.new(out:)
       writer.write file_decls
-      config.project.write("sig/#{filename}.rbs", out.string)
+      config.project.write("#{config.output_dir}/#{filename}.rbs", out.string)
     end
   end
 end

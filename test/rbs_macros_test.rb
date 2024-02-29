@@ -83,7 +83,7 @@ class RbsMacrosTest < Minitest::Test
       config.macros << DummyMacro.new
     end
 
-    assert_equal <<~RBS, project.read("sig/foo.rbs")
+    assert_equal <<~RBS, project.read("sig/generated/foo.rbs")
       module Foo
         def method_defined_from_macro: () -> void
 

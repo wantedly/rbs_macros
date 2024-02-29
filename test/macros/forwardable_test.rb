@@ -37,7 +37,7 @@ class ForwardableTest < Minitest::Test
       config.macros << RbsMacros::Macros::ForwardableMacros.new
     end
 
-    assert_equal <<~RBS, project.read("sig/foo.rbs")
+    assert_equal <<~RBS, project.read("sig/generated/foo.rbs")
       module Foo
         def content_at: (::int index) -> ::String
                       | (::int start, ::int length) -> ::Array[::String]?
