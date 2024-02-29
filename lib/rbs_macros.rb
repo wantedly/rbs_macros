@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 require_relative "rbs_macros/version"
+require_relative "rbs_macros/config"
 require_relative "rbs_macros/environment"
 require_relative "rbs_macros/exec_ctx"
 require_relative "rbs_macros/library_registry"
 require_relative "rbs_macros/macro"
 require_relative "rbs_macros/meta_module"
+require_relative "rbs_macros/project"
 
 require "stringio"
 require "rbs"
@@ -13,13 +15,28 @@ require "rbs"
 # RbsMacros is a utility that looks for metaprogramming-related
 # method invocation in your Ruby code and generates RBS files for them.
 module RbsMacros
-  def self.run(macros:, loader: nil, fs: File, &block)
+  def self.run(&block)
+    config = Config.new
+    block&.(config)
+
     env = Environment.new
-    loader&.load(env: env.rbs)
-    macros.each do |macro|
+    config.loader.load(env: env.rbs) if config.use_loader
+    config.macros.each do |macro|
       macro.setup(env)
     end
-    block&.(env)
+
+    config.project.glob(ext: ".rbs", include: config.sigs, exclude: [config.output_dir]) do |filename|
+      source = config.project.read(filename)
+      buffer = RBS::Buffer.new(name: filename, content: source)
+      _, directives, decls = RBS::Parser.parse_signature(buffer)
+      env.rbs.add_signature(buffer:, directives:, decls:)
+    end
+    # TODO: streamline this private method invocation
+    env.instance_variable_set(:@rbs, env.rbs.resolve_type_names)
+    config.project.glob(ext: ".rb", include: config.load_dirs, exclude: []) do |filename|
+      source = config.project.read(filename)
+      env.meta_eval_ruby(source)
+    end
 
     files = {} # : Hash[String, Array[RBS::AST::Declarations::t]]
     env.decls.each do |entry|
@@ -107,7 +124,7 @@ module RbsMacros
       out = StringIO.new(+"", "w")
       writer = RBS::Writer.new(out:)
       writer.write file_decls
-      fs.write("sig/#{filename}.rbs", out.string)
+      config.project.write("sig/#{filename}.rbs", out.string)
     end
   end
 end

@@ -1,0 +1,13 @@
+module RbsMacros
+  class Config
+    attr_reader macros: Array[Macro]
+    attr_reader load_dirs: Array[String]
+    attr_reader sigs: Array[String]
+    attr_accessor loader: RBS::EnvironmentLoader
+    attr_accessor use_loader: bool
+    attr_accessor project: AbstractProject
+    attr_accessor output_dir: String
+
+    def initialize: () -> void
+  end
+end

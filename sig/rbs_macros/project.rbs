@@ -1,0 +1,22 @@
+module RbsMacros
+  class AbstractProject
+    def glob: (ext: String, include: Array[String], exclude: Array[String]) { (String) -> void } -> void
+            | (ext: String, include: Array[String], exclude: Array[String]) -> Enumerator[String, void]
+
+    def write: (String path, String content) -> void
+
+    def read: (String path) -> String
+  end
+
+  class Project < AbstractProject
+    attr_reader base_dir: Pathname
+
+    def initialize: (?base_dir: Pathname) -> void
+  end
+
+  class FakeProject < AbstractProject
+    @files: Hash[String, String]
+
+    def initialize: () -> void
+  end
+end

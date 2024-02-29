@@ -65,24 +65,25 @@ class RbsMacrosTest < Minitest::Test
   end
 
   def test_run
-    macros = [DummyMacro.new]
-    fs = DummyFS.new
-    RbsMacros.run(macros:, fs:) do |env|
-      env.meta_eval_ruby(<<~RUBY)
-        module Foo
-          my_macro :foo
-          module Bar
-            my_macro :bar
-          end
+    project = RbsMacros::FakeProject.new
+    project.write("lib/foo.rb", <<~RBS)
+      module Foo
+        my_macro :foo
+        module Bar
+          my_macro :bar
         end
+      end
 
-        class MyClass
-          my_macro :foo
-        end
-      RUBY
+      class MyClass
+        my_macro :foo
+      end
+    RBS
+    RbsMacros.run do |config|
+      config.project = project
+      config.macros << DummyMacro.new
     end
 
-    assert_equal <<~RBS, fs.read("sig/foo.rbs")
+    assert_equal <<~RBS, project.read("sig/foo.rbs")
       module Foo
         def method_defined_from_macro: () -> void
 

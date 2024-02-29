@@ -19,28 +19,25 @@ class ForwardableTest < Minitest::Test
   end
 
   def test_run
-    macros = [RbsMacros::Macros::ForwardableMacros.new]
-    loader = RBS::EnvironmentLoader.new
-    fs = DummyFS.new
-    RbsMacros.run(macros:, loader:, fs:) do |env|
-      buffer = RBS::Buffer.new(name: "foo.rbs", content: <<~RBS)
-        module Foo
-          extend Forwardable
-          @contents: Array[String]
-        end
-      RBS
-      _, directives, decls = RBS::Parser.parse_signature(buffer)
-      env.rbs.add_signature(buffer:, directives:, decls:)
-      env.instance_variable_set(:@rbs, env.rbs.resolve_type_names)
-      env.meta_eval_ruby(<<~RUBY)
-        module Foo
-          extend Forwardable
-          def_delegator(:@contents, :[], "content_at")
-        end
-      RUBY
+    project = RbsMacros::FakeProject.new
+    project.write("lib/foo.rb", <<~RBS)
+      module Foo
+        extend Forwardable
+        def_delegator(:@contents, :[], "content_at")
+      end
+    RBS
+    project.write("sig/foo.rbs", <<~RBS)
+      module Foo
+        extend Forwardable
+        @contents: Array[String]
+      end
+    RBS
+    RbsMacros.run do |config|
+      config.project = project
+      config.macros << RbsMacros::Macros::ForwardableMacros.new
     end
 
-    assert_equal <<~RBS, fs.read("sig/foo.rbs")
+    assert_equal <<~RBS, project.read("sig/foo.rbs")
       module Foo
         def content_at: (::int index) -> ::String
                       | (::int start, ::int length) -> ::Array[::String]?

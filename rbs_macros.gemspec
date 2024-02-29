@@ -40,6 +40,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Uncomment to register a new dependency of your gem
+  spec.add_dependency "fileutils", "~> 1.7"
   spec.add_dependency "forwardable", "~> 1.3"
   spec.add_dependency "prism", "~> 0.24.0"
   spec.add_dependency "rbs", "~> 3.4"
