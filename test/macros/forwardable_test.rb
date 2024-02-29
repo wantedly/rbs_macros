@@ -18,7 +18,7 @@ class ForwardableTest < Minitest::Test
     end
   end
 
-  def test_run
+  def test_forwardable
     project = RbsMacros::FakeProject.new
     project.write("lib/foo.rb", <<~RBS)
       module Foo

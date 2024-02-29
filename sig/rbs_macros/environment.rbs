@@ -12,7 +12,7 @@ module RbsMacros
 
     def invoke: (HandlerParams params) -> void
 
-    def meta_eval_ruby: (String) -> void
+    def meta_eval_ruby: (String, filename: String) -> void
 
     def add_decl: (RBS::AST::Declarations::t | RBS::AST::Members::t decl, mod: MetaModule, file: String) -> void
 
@@ -20,14 +20,15 @@ module RbsMacros
 
     class HandlerParams < Data
       attr_reader env(): Environment
+      attr_reader filename(): String
       attr_reader receiver(): Object
       attr_reader name(): Symbol
       attr_reader positional(): Array[Object]
       attr_reader keyword(): Hash[Object, Object]
       attr_reader block(): untyped
 
-      def self.new: (env: Environment, receiver: Object, name: Symbol, positional: Array[Object], keyword: Hash[Object, Object], block: untyped) -> instance
-      def initialize: (env: Environment, receiver: Object, name: Symbol, positional: Array[Object], keyword: Hash[Object, Object], block: untyped) -> void
+      def self.new: (env: Environment, filename: String, receiver: Object, name: Symbol, positional: Array[Object], keyword: Hash[Object, Object], block: untyped) -> instance
+      def initialize: (env: Environment, filename: String, receiver: Object, name: Symbol, positional: Array[Object], keyword: Hash[Object, Object], block: untyped) -> void
     end
 
     class DeclarationEntry < Data

@@ -59,7 +59,7 @@ module RbsMacros
             visibility: nil
           ),
           mod: recv,
-          file: "foo"
+          file: params.filename
         )
       end
 

@@ -34,8 +34,15 @@ module RbsMacros
     # TODO: streamline this private method invocation
     env.instance_variable_set(:@rbs, env.rbs.resolve_type_names)
     config.project.glob(ext: ".rb", include: config.load_dirs, exclude: []) do |filename|
+      relative_filename = filename
+      config.load_dirs.each do |load_dir|
+        if filename.start_with?("#{load_dir}/")
+          relative_filename = filename.delete_prefix("#{load_dir}/")
+          break
+        end
+      end
       source = config.project.read(filename)
-      env.meta_eval_ruby(source)
+      env.meta_eval_ruby(source, filename: relative_filename.sub(/\.rb\z/, ""))
     end
 
     files = {} # : Hash[String, Array[RBS::AST::Declarations::t]]

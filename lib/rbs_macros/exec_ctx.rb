@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RbsMacros
-  ExecCtx = _ = Data.define(:env, :self, :cref, :cref_dynamic, :locals) # rubocop:disable Naming/ConstantName
+  ExecCtx = _ = Data.define(:env, :filename, :self, :cref, :cref_dynamic, :locals) # rubocop:disable Naming/ConstantName
 
   # Context, including self, class, and local variables
   class ExecCtx
@@ -24,6 +24,7 @@ module RbsMacros
         env.invoke(
           Environment::HandlerParams.new(
             env:,
+            filename:,
             receiver: recv,
             name: node.name,
             positional:,

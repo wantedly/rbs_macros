@@ -25,12 +25,13 @@ module RbsMacros
       end
     end
 
-    def meta_eval_ruby(code)
-      result = Prism.parse(code)
+    def meta_eval_ruby(code, filename:)
+      result = Prism.parse(code, filepath: "#{filename}.rb")
       raise ArgumentError, "Parse error: #{result.errors}" if result.failure?
 
       ExecCtx.new(
         env: self,
+        filename:,
         self: nil, # TODO
         cref: @object_class,
         cref_dynamic: @object_class,
@@ -42,7 +43,7 @@ module RbsMacros
       @decls << DeclarationEntry.new(declaration: decl, mod:, file:)
     end
 
-    HandlerParams = _ = Data.define(:env, :receiver, :name, :positional, :keyword, :block) # rubocop:disable Naming/ConstantName
+    HandlerParams = _ = Data.define(:env, :filename, :receiver, :name, :positional, :keyword, :block) # rubocop:disable Naming/ConstantName
 
     DeclarationEntry = _ = Data.define(:declaration, :mod, :file) # rubocop:disable Naming/ConstantName
   end
