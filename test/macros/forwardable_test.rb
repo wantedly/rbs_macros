@@ -45,4 +45,34 @@ class ForwardableTest < Minitest::Test
       end
     RBS
   end
+
+  def test_def_delegators
+    project = RbsMacros::FakeProject.new
+    project.write("lib/array_wrapper.rb", <<~RBS)
+      class ArrayWrapper
+        extend Forwardable
+        def_delegators :@storage, :[], :size
+      end
+    RBS
+    project.write("sig/array_wrapper.rbs", <<~RBS)
+      class ArrayWrapper[T]
+        extend Forwardable
+        @storage: Array[T]
+      end
+    RBS
+    RbsMacros.run do |config|
+      config.project = project
+      config.macros << RbsMacros::Macros::ForwardableMacros.new
+    end
+
+    assert_equal <<~RBS, project.read("sig/generated/array_wrapper.rbs")
+      class ArrayWrapper
+        def []: (::int index) -> T
+              | (::int start, ::int length) -> ::Array[T]?
+              | (::Range[::Integer?] range) -> ::Array[T]?
+
+        def size: () -> ::Integer
+      end
+    RBS
+  end
 end

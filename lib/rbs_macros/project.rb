@@ -66,6 +66,10 @@ module RbsMacros
       FileUtils.mkdir_p(full_path.dirname)
       File.write(full_path.to_s, content)
     end
+
+    def read(path)
+      File.read((@base_dir + path).to_s)
+    end
   end
 
   # An in-memory project.

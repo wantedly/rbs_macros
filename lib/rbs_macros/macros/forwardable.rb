@@ -9,6 +9,9 @@ module RbsMacros
       def setup(env)
         env.register_handler(:def_delegator, method(:meta_def_delegator))
         env.register_handler(:def_instance_delegator, method(:meta_def_delegator))
+
+        env.register_handler(:def_delegators, method(:meta_def_delegators))
+        env.register_handler(:def_instance_delegators, method(:meta_def_delegators))
       end
 
       def meta_def_delegator(params)
@@ -61,6 +64,24 @@ module RbsMacros
           mod: recv,
           file: params.filename
         )
+      end
+
+      def meta_def_delegators(params)
+        recv = params.receiver
+        return unless recv.is_a?(MetaModule)
+
+        accessor = params.positional[0]
+        methods = params.positional[1..] || []
+        methods.each do |method|
+          params.env.invoke(
+            params.with(
+              name: :def_instance_delegator,
+              positional: [accessor, method],
+              keyword: {},
+              block: nil
+            )
+          )
+        end
       end
 
       private
