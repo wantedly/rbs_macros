@@ -1,7 +1,8 @@
 ## [Unreleased]
 
-- Added
+- Fixed
   - Fix type parameter generation
+  - Fix handling of `class Foo::Bar`
 
 ## [0.1.0] - 2024-02-29
 

@@ -16,8 +16,10 @@ module RbsMacros
           else
             self.self
           end
-        positional = [] # : Array[Object]
-        keyword = {} # : Hash[Object, Object]
+        return nil if recv.nil? && node.safe_navigation?
+
+        positional = [] # : Array[Object?]
+        keyword = {} # : Hash[Object?, Object?]
         node.arguments&.arguments&.each do |arg|
           positional << eval_node(arg)
         end
@@ -32,23 +34,33 @@ module RbsMacros
             block: nil
           )
         )
+        result = nil # TODO
+        return positional[0] if node.attribute_write?
+
+        result
       when Prism::ClassNode
-        klass = cref.define_module(node.name)
+        klass = eval_module_read(node.constant_path)
+        return unless klass.is_a?(MetaModule)
+
+        # TODO: evaluate superclass
+
         klass.class!
         with(
           self: klass,
           cref: klass,
           cref_dynamic: klass,
-          locals: {}
+          locals: init_locals(node.locals)
         ).eval_node(node.body)
       when Prism::ModuleNode
-        mod = cref.define_module(node.name)
+        mod = eval_module_read(node.constant_path)
+        return unless mod.is_a?(MetaModule)
+
         mod.module!
         with(
           self: mod,
           cref: mod,
           cref_dynamic: mod,
-          locals: {}
+          locals: init_locals(node.locals)
         ).eval_node(node.body)
       when Prism::ProgramNode
         eval_node(node.statements)
@@ -61,6 +73,42 @@ module RbsMacros
       else
         $stderr.puts "Dismissing node: #{node.inspect}" # rubocop:disable Style/StderrPuts
       end
+    end
+
+    def eval_module_read(node)
+      case node
+      when Prism::ConstantReadNode
+        # Foo as in `class Foo` or `Foo::Bar`.
+        # Assume Foo exists and is a module.
+        #
+        # TODO: check for cref stack in case other than class/module expressions
+        cref.define_module(node.name)
+      when Prism::ConstantPathNode
+        base =
+          if node.parent
+            # node = `Foo::Bar` and parent = `Foo`
+            eval_module_read(node.parent)
+          else
+            # node = `::Foo`
+            env.object_class
+          end
+
+        child = node.child
+        raise TypeError, "Not a ConstantReadNode: #{child.class}" unless child.is_a?(Prism::ConstantReadNode)
+
+        if base.is_a?(MetaModule)
+          # Assume that the constant exists and is a module
+          base.define_module(child.name)
+        end
+      else
+        eval_node(node)
+      end
+    end
+
+    private
+
+    def init_locals(locals)
+      locals.each_with_object({}) { |name, hash| hash[name] = nil } # $ Hash[Symbol, Object?]
     end
   end
 end

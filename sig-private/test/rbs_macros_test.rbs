@@ -12,6 +12,8 @@ class RbsMacrosTest < Minitest::Test
 
   def test_run: () -> void
 
+  def test_module_access: () -> void
+
   def test_with_generics: () -> void
 end
 

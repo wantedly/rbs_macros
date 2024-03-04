@@ -98,6 +98,45 @@ class RbsMacrosTest < Minitest::Test
     RBS
   end
 
+  def test_module_access
+    project = RbsMacros::FakeProject.new
+    project.write("lib/foo.rb", <<~RBS)
+      module Mod1::Bar
+        my_macro :foo
+      end
+
+      module ::Mod2
+        my_macro :foo
+      end
+
+      module ::Mod3::Bar
+        my_macro :foo
+      end
+    RBS
+    RbsMacros.run do |config|
+      config.project = project
+      config.macros << DummyMacro.new
+    end
+
+    assert_equal <<~RBS, project.read("sig/generated/foo.rbs")
+      module Mod1
+        module Bar
+          def method_defined_from_macro: () -> void
+        end
+      end
+
+      module Mod2
+        def method_defined_from_macro: () -> void
+      end
+
+      module Mod3
+        module Bar
+          def method_defined_from_macro: () -> void
+        end
+      end
+    RBS
+  end
+
   def test_with_generics
     project = RbsMacros::FakeProject.new
     project.write("lib/foo.rb", <<~RBS)

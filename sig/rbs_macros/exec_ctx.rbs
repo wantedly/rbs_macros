@@ -2,13 +2,19 @@ module RbsMacros
   class ExecCtx < Data
     attr_reader env: Environment
     attr_reader filename: String
-    attr_reader self: untyped
+    attr_reader self: Object?
     attr_reader cref: MetaModule
     attr_reader cref_dynamic: MetaModule
-    attr_reader locals: untyped
-    def self.new: (env: Environment, filename: String, self: untyped, cref: MetaModule, cref_dynamic: MetaModule, locals: untyped) -> instance
-    def initialize: (env: Environment, filename: String, self: untyped, cref: MetaModule, cref_dynamic: MetaModule, locals: untyped) -> void
+    attr_reader locals: Hash[Symbol, Object?]
+    def self.new: (env: Environment, filename: String, self: Object?, cref: MetaModule, cref_dynamic: MetaModule, locals: Hash[Symbol, Object?]) -> instance
+    def initialize: (env: Environment, filename: String, self: Object?, cref: MetaModule, cref_dynamic: MetaModule, locals: Hash[Symbol, Object?]) -> void
 
-    def eval_node: (Prism::Node? node) -> untyped
+    def eval_node: (Prism::Node? node) -> Object?
+
+    def eval_module_read: (Prism::Node? node) -> Object?
+
+    private
+
+    def init_locals: (Array[Symbol] locals) -> Hash[Symbol, Object?]
   end
 end
