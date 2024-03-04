@@ -66,7 +66,7 @@ class ForwardableTest < Minitest::Test
     end
 
     assert_equal <<~RBS, project.read("sig/generated/array_wrapper.rbs")
-      class ArrayWrapper
+      class ArrayWrapper[T]
         def []: (::int index) -> T
               | (::int start, ::int length) -> ::Array[T]?
               | (::Range[::Integer?] range) -> ::Array[T]?
@@ -102,7 +102,7 @@ class ForwardableTest < Minitest::Test
     end
 
     assert_equal <<~RBS, project.read("sig/generated/singleton_pattern.rbs")
-      class SingletonPattern
+      class SingletonPattern[T]
         def self.singleton_query: () -> ::Numeric
 
         def self.length: () -> ::Integer

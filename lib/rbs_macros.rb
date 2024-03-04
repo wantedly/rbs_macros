@@ -67,10 +67,12 @@ module RbsMacros
         end
         next if container
 
+        type_params = env.rbs.class_decls[current_mod.rbs_type]&.type_params || []
+
         if inner_mod.is_class
           container = c = RBS::AST::Declarations::Class.new(
             name: RBS::TypeName.new(name: name.to_sym, namespace: RBS::Namespace.empty),
-            type_params: [],
+            type_params:,
             super_class: nil,
             members: [],
             annotations: [],
@@ -81,7 +83,7 @@ module RbsMacros
         else
           container = m = RBS::AST::Declarations::Module.new(
             name: RBS::TypeName.new(name: name.to_sym, namespace: RBS::Namespace.empty),
-            type_params: [],
+            type_params:,
             members: [],
             self_types: [],
             annotations: [],

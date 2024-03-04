@@ -9,5 +9,9 @@ class RbsMacrosTest < Minitest::Test
 
   class DummyMacro < RbsMacros::Macro
   end
+
+  def test_run: () -> void
+
+  def test_with_generics: () -> void
 end
 
