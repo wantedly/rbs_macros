@@ -19,20 +19,21 @@ module RbsMacros
     config = Config.new
     block&.(config)
 
-    env = Environment.new
-    config.loader.load(env: env.rbs) if config.use_loader
-    config.macros.each do |macro|
-      macro.setup(env)
-    end
-
+    rbs = RBS::Environment.new
+    config.loader.load(env: rbs) if config.use_loader
     config.project.glob(ext: ".rbs", include: config.sigs, exclude: [config.output_dir]) do |filename|
       source = config.project.read(filename)
       buffer = RBS::Buffer.new(name: filename, content: source)
       _, directives, decls = RBS::Parser.parse_signature(buffer)
-      env.rbs.add_signature(buffer:, directives:, decls:)
+      rbs.add_signature(buffer:, directives:, decls:)
     end
-    # TODO: streamline this private method invocation
-    env.instance_variable_set(:@rbs, env.rbs.resolve_type_names)
+    rbs = rbs.resolve_type_names
+
+    env = Environment.new(rbs:)
+    config.macros.each do |macro|
+      macro.setup(env)
+    end
+
     config.project.glob(ext: ".rb", include: config.load_dirs, exclude: []) do |filename|
       relative_filename = filename
       config.load_dirs.each do |load_dir|

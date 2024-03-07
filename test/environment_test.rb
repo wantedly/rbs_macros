@@ -4,7 +4,7 @@ require_relative "test_helper"
 
 class EnvironmentTest < Minitest::Test
   def test_eval_simple_class
-    env = RbsMacros::Environment.new
+    env = RbsMacros::Environment.new(rbs: RBS::Environment.new)
     env.meta_eval_ruby(<<~RUBY, filename: "foo.rb")
       class Foo
       end

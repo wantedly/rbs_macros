@@ -7,8 +7,8 @@ module RbsMacros
   class Environment
     attr_reader :rbs, :object_class, :decls
 
-    def initialize
-      @rbs = RBS::Environment.new
+    def initialize(rbs:)
+      @rbs = rbs
       @object_class = MetaClass.new(self, "Object", is_class: true)
       @decls = []
       @exact_handlers = {}

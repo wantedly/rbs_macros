@@ -6,7 +6,7 @@ module RbsMacros
 
     @exact_handlers: Hash[Symbol, Array[^(HandlerParams) -> void]]
 
-    def initialize: () -> void
+    def initialize: (rbs: RBS::Environment) -> void
 
     def register_handler: (Symbol | String name, ^(HandlerParams) -> void handler) -> void
 
